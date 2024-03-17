@@ -13,9 +13,15 @@ dependencies:
   #image_editor_platform_interface: ^1.0.0
   #image_editor_common: ^1.0.1
   image_editor_common:
-    path: ../image_editor_common
+    git:
+      url: https://github.com/lolocomotive/flutter_image_editor
+      ref: b64a2e1c54b001b1a0f384008330e557ba2cd992
+      path: image_editor_common
   image_editor_platform_interface:
-    path: ../image_editor_platform_interface
+    git:
+      url: https://github.com/lolocomotive/flutter_image_editor
+      ref: b64a2e1c54b001b1a0f384008330e557ba2cd992
+      path: image_editor_platform_interface
 
 dev_dependencies:
   flutter_test:
