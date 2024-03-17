@@ -13,6 +13,18 @@ class OutputFormat with JsonAble {
       : format = ImageFormat.png,
         assert(quality > 0 && quality <= 100);
 
+  /// webp format.
+  const OutputFormat.webp([this.quality = 80])
+      : format = ImageFormat.webp,
+        assert(quality > 0 && quality <= 100);
+
+  const OutputFormat.webp_lossy([this.quality = 80])
+      : format = ImageFormat.webp_lossy,
+        assert(quality > 0 && quality <= 100);
+  const OutputFormat.webp_lossless([this.quality = 100])
+      : format = ImageFormat.webp_lossless,
+        assert(quality > 0 && quality <= 100);
+
   /// See [ImageFormat].
   final ImageFormat format;
 

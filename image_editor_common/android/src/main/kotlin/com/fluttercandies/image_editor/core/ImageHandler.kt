@@ -15,15 +15,16 @@ import java.io.OutputStream
 class ImageHandler(private var bitmap: Bitmap) {
     fun handle(options: List<Option>) {
         for (option in options) {
-            when (option) {
-                is ColorOption -> bitmap = handleColor(option)
-                is ScaleOption -> bitmap = handleScale(option)
-                is FlipOption -> bitmap = handleFlip(option)
-                is ClipOption -> bitmap = handleClip(option)
-                is RotateOption -> bitmap = handleRotate(option)
-                is AddTextOpt -> bitmap = handleText(option)
-                is MixImageOpt -> bitmap = handleMixImage(option)
-                is DrawOption -> bitmap = bitmap.draw(option)
+           bitmap = when (option) {
+                is ColorOption -> handleColor(option)
+                is ScaleOption -> handleScale(option)
+                is FlipOption -> handleFlip(option)
+                is ClipOption -> handleClip(option)
+                is RotateOption -> handleRotate(option)
+                is AddTextOpt -> handleText(option)
+                is MixImageOpt -> handleMixImage(option)
+                is DrawOption -> bitmap.draw(option)
+                else -> throw Exception("Illegal option")
             }
         }
     }
@@ -157,10 +158,12 @@ class ImageHandler(private var bitmap: Bitmap) {
 
     private fun output(outputStream: OutputStream, formatOption: FormatOption) {
         outputStream.use {
-            if (formatOption.format == 0) {
-                bitmap.compress(Bitmap.CompressFormat.PNG, formatOption.quality, outputStream)
-            } else {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, formatOption.quality, outputStream)
+            when (formatOption.format) {
+                0 -> bitmap.compress(Bitmap.CompressFormat.PNG, formatOption.quality, outputStream)
+                1 -> bitmap.compress(Bitmap.CompressFormat.JPEG, formatOption.quality, outputStream)
+                2 -> bitmap.compress(Bitmap.CompressFormat.WEBP, formatOption.quality, outputStream)
+                3 -> bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, formatOption.quality, outputStream)
+                else -> bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, formatOption.quality, outputStream)
             }
         }
     }

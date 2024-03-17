@@ -6,7 +6,12 @@ enum ImageFormat {
   png,
 
   /// jpeg
-  jpeg
+  jpeg,
+
+  /// webp
+  webp,
+  webp_lossy,
+  webp_lossless
 }
 
 /// Image source type.

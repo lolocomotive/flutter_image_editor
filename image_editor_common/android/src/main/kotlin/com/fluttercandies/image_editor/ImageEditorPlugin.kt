@@ -110,7 +110,12 @@ class ImageEditorPlugin : FlutterPlugin, MethodCallHandler {
         if (memory) {
             resultHandler.reply(byteArray)
         } else {
-            val extName = if (mergeOption.formatOption.format == 1) "jpg" else "png"
+            val extName =
+                    when (mergeOption.formatOption.format) {
+                        0 -> "png"
+                        1 -> "jpg"
+                        else -> "webp"
+                    }
             val f = File(applicationContext!!.cacheDir, "${System.currentTimeMillis()}.$extName")
             f.writeBytes(byteArray)
             resultHandler.reply(byteArray)
@@ -184,7 +189,6 @@ class ImageEditorPlugin : FlutterPlugin, MethodCallHandler {
             }
         }
         return BitmapWrapper(bitmap, degree, flipOption)
-
     }
 
     private fun MethodCall.getFormatOption(): FormatOption {

@@ -25,7 +25,14 @@ class ImageMerger(private val mergeOption: MergeOption) {
         val fmt = mergeOption.formatOption
         val stream = ByteArrayOutputStream()
         val format: Bitmap.CompressFormat =
-            if (fmt.format == 1) Bitmap.CompressFormat.JPEG else Bitmap.CompressFormat.PNG
+        when(fmt.format){
+            0 -> Bitmap.CompressFormat.PNG
+            1 -> Bitmap.CompressFormat.JPEG
+            2 -> Bitmap.CompressFormat.WEBP
+            3 -> Bitmap.CompressFormat.WEBP_LOSSY
+            else -> Bitmap.CompressFormat.WEBP_LOSSLESS
+
+        }
         newBitmap.compress(format, fmt.quality, stream)
 //    newBitmap.recycle()
         return stream.toByteArray()
