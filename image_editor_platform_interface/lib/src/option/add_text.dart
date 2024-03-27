@@ -79,20 +79,13 @@ extension MatrixConvert on Matrix4 {
   }
 
   Float64List toMatrix3RowFirst() {
-    print("Mat4: ");
-    print(this);
-
     final mat3 = toMatrix3();
-    print("Mat3: ");
-    print(mat3);
     Float64List r = Float64List(9);
     for (int x = 0; x < 3; x++) {
       for (int y = 0; y < 3; y++) {
         r[3 * y + x] = mat3.storage[3 * x + y];
       }
     }
-    print("Mat3 RowFirst: ");
-    print(r);
     return r;
   }
 }
