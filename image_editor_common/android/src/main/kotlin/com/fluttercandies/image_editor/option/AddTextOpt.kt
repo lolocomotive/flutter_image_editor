@@ -1,5 +1,7 @@
 package com.fluttercandies.image_editor.option
 
+import android.graphics.Matrix
+
 class AddTextOpt : Option {
     val texts = ArrayList<Text>()
 
@@ -10,9 +12,8 @@ class AddTextOpt : Option {
 
 data class Text(
     val text: String,
-    val x: Int,
-    val y: Int,
-    val fontSizePx: Int,
+    val transform: Matrix,
+    val fontSize: Double,
     val r: Int,
     val g: Int,
     val b: Int,

@@ -9,10 +9,12 @@ import java.io.ByteArrayOutputStream
 
 class ImageMerger(private val mergeOption: MergeOption) {
     fun process(): ByteArray? {
-        val newBitmap = Bitmap.createBitmap(mergeOption.width, mergeOption.height, Bitmap.Config.ARGB_8888)
+        val newBitmap =
+            Bitmap.createBitmap(mergeOption.width, mergeOption.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(newBitmap)
         for (mergeImage in mergeOption.images) {
-            val bitmap = BitmapFactory.decodeByteArray(mergeImage.byteArray, 0, mergeImage.byteArray.count())
+            val bitmap =
+                BitmapFactory.decodeByteArray(mergeImage.byteArray, 0, mergeImage.byteArray.count())
             val position = mergeImage.position
             val dstRect = Rect(
                 position.x,
@@ -24,15 +26,7 @@ class ImageMerger(private val mergeOption: MergeOption) {
         }
         val fmt = mergeOption.formatOption
         val stream = ByteArrayOutputStream()
-        val format: Bitmap.CompressFormat =
-        when(fmt.format){
-            0 -> Bitmap.CompressFormat.PNG
-            1 -> Bitmap.CompressFormat.JPEG
-            2 -> Bitmap.CompressFormat.WEBP
-            3 -> Bitmap.CompressFormat.WEBP_LOSSY
-            else -> Bitmap.CompressFormat.WEBP_LOSSLESS
-
-        }
+        val format: Bitmap.CompressFormat = getCompressFormat(fmt)
         newBitmap.compress(format, fmt.quality, stream)
 //    newBitmap.recycle()
         return stream.toByteArray()

@@ -15,7 +15,7 @@ import java.io.OutputStream
 class ImageHandler(private var bitmap: Bitmap) {
     fun handle(options: List<Option>) {
         for (option in options) {
-           bitmap = when (option) {
+            bitmap = when (option) {
                 is ColorOption -> handleColor(option)
                 is ScaleOption -> handleScale(option)
                 is FlipOption -> handleFlip(option)
@@ -119,7 +119,7 @@ class ImageHandler(private var bitmap: Bitmap) {
     private fun drawText(text: Text, canvas: Canvas) {
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
-        textPaint.textSize = text.fontSizePx.toFloat()
+        textPaint.textSize = text.fontSize.toFloat()
         if (text.fontName.isNotEmpty()) {
             try {
                 val typefaceFromAsset = FontUtils.getFont(text.fontName)
@@ -127,21 +127,36 @@ class ImageHandler(private var bitmap: Bitmap) {
             } catch (_: Exception) {
             }
         }
-//    canvas.drawText(text.text, text.x.toFloat(), text.y.toFloat(), textPaint)
-        val staticLayout = getStaticLayout(text, textPaint, canvas.width - text.x)
-        canvas.translate(text.x.toFloat(), text.y.toFloat())
+        textPaint.textAlign = Paint.Align.LEFT
+
+        @Suppress("DEPRECATION") val previous = canvas.matrix
+
+        val staticLayout = getStaticLayout(text, textPaint, canvas.width)
+        val bounds = Rect()
+        canvas.getClipBounds(bounds)
+        val cHeight = bounds.height()
+        val y = cHeight / 2f - staticLayout.height / 2f
+        val transform = Matrix(text.transform)
+
+        transform.preTranslate(0f, y)
+        canvas.setMatrix(transform)
         staticLayout.draw(canvas)
-        canvas.translate((-text.x).toFloat(), (-text.y).toFloat())
+
+        canvas.setMatrix(previous)
     }
 
     @Suppress("DEPRECATION")
     private fun getStaticLayout(text: Text, textPaint: TextPaint, width: Int): StaticLayout {
         return if (Build.VERSION.SDK_INT >= 23) {
-            StaticLayout.Builder.obtain(
+            val builder = StaticLayout.Builder.obtain(
                 text.text, 0, text.text.length, textPaint, width
-            ).build()
+            )
+            builder.setAlignment(Layout.Alignment.ALIGN_CENTER)
+            return builder.build()
         } else {
-            StaticLayout(text.text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true)
+            StaticLayout(
+                text.text, textPaint, width, Layout.Alignment.ALIGN_CENTER, 1.0F, 0.0F, true
+            )
         }
     }
 
@@ -156,15 +171,32 @@ class ImageHandler(private var bitmap: Bitmap) {
         return outputStream.toByteArray()
     }
 
+
     private fun output(outputStream: OutputStream, formatOption: FormatOption) {
         outputStream.use {
-            when (formatOption.format) {
-                0 -> bitmap.compress(Bitmap.CompressFormat.PNG, formatOption.quality, outputStream)
-                1 -> bitmap.compress(Bitmap.CompressFormat.JPEG, formatOption.quality, outputStream)
-                2 -> bitmap.compress(Bitmap.CompressFormat.WEBP, formatOption.quality, outputStream)
-                3 -> bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSY, formatOption.quality, outputStream)
-                else -> bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, formatOption.quality, outputStream)
-            }
+            bitmap.compress(
+                getCompressFormat(formatOption), formatOption.quality, outputStream
+            )
+        }
+    }
+}
+
+@Suppress("DEPRECATION")
+fun getCompressFormat(formatOption: FormatOption): Bitmap.CompressFormat {
+    if (Build.VERSION.SDK_INT < 30) {
+        return when (formatOption.format) {
+            0 -> Bitmap.CompressFormat.PNG
+            1 -> Bitmap.CompressFormat.JPEG
+            else -> Bitmap.CompressFormat.WEBP
+        }
+    } else {
+        return when (formatOption.format) {
+            0 -> Bitmap.CompressFormat.PNG
+            1 -> Bitmap.CompressFormat.JPEG
+            2 -> Bitmap.CompressFormat.WEBP
+            3 -> Bitmap.CompressFormat.WEBP_LOSSY
+            else -> Bitmap.CompressFormat.WEBP_LOSSLESS
+
         }
     }
 }

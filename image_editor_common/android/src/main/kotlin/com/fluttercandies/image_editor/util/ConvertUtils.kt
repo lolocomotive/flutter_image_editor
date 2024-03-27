@@ -1,5 +1,6 @@
 package com.fluttercandies.image_editor.util
 
+import android.graphics.Matrix
 import android.graphics.PorterDuff
 import io.flutter.plugin.common.MethodCall
 import com.fluttercandies.image_editor.core.BitmapWrapper
@@ -84,11 +85,17 @@ object ConvertUtils {
     }
 
     private fun convertToText(v: Map<*, *>): Text {
+        val mat = Matrix()
+        val transform = v["transform"]!! as DoubleArray
+        val transformFloat = FloatArray(transform.size)
+        for (i in transform.indices){
+            transformFloat[i] = transform[i].toFloat()
+        }
+        mat.setValues(transformFloat)
         return Text(
             v["text"]!!.asValue(),
-            v["x"]!!.asValue(),
-            v["y"]!!.asValue(),
-            v["size"]!!.asValue(),
+            mat,
+            v["size"] as Double,
             v["r"]!!.asValue(),
             v["g"]!!.asValue(),
             v["b"]!!.asValue(),

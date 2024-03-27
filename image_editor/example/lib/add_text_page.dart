@@ -4,10 +4,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_editor/image_editor.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart' as pp;
-import 'package:http/http.dart' as http;
 
 import 'const/resource.dart';
 
@@ -114,9 +114,9 @@ class _AddTextPageState extends State<AddTextPage> {
     final AddTextOption textOption = AddTextOption();
     textOption.addText(
       EditorText(
-        offset: const Offset(0, 0),
+        transform: const Offset(0, 0),
         text: _controller.text,
-        fontSizePx: size,
+        fontSize: size,
         textColor: const Color(0xFF995555),
         fontName: fontName,
       ),

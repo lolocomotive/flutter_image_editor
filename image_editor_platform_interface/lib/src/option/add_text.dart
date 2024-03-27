@@ -28,47 +28,71 @@ class AddTextOption implements Option {
 
 /// Descript of a text.
 class EditorText {
-  const EditorText({
+  EditorText({
     required this.text,
-    required this.offset,
-    this.fontSizePx = 14,
+    required this.transform,
+    this.fontSize = 14,
     this.textColor = Colors.black,
     this.fontName = '',
   });
 
   /// The text.
-  final String text;
+  String text;
 
   /// The offset of text.
-  final Offset offset;
+  Matrix4 transform;
 
   /// The font size of text.
-  final int fontSizePx;
+  double fontSize;
 
   /// The color of text.
-  final Color textColor;
+  Color textColor;
 
   /// The font name of text, if fontName is empty string, the text will use system font.
-  final String fontName;
-
-  int get y {
-    if (Platform.isAndroid) {
-      return offset.dy.toInt() + fontSizePx;
-    }
-    return offset.dy.toInt();
-  }
+  String fontName;
 
   Map<String, Object> toJson() {
     return <String, Object>{
       'text': text,
       'fontName': fontName,
-      'x': offset.dx.toInt(),
-      'y': offset.dy.toInt(),
-      'size': fontSizePx,
+      'transform': transform.toMatrix3RowFirst(),
+      'size': fontSize,
       'r': textColor.red,
       'g': textColor.green,
       'b': textColor.blue,
       'a': textColor.alpha,
     };
+  }
+}
+
+extension MatrixConvert on Matrix4 {
+  Matrix3 toMatrix3() {
+    Float64List mat3 = Float64List(9);
+    int offset = 0;
+    for (int i = 0; i < 9; i++) {
+      if ((i + offset) % 4 == 3) offset++;
+      if (i + offset == 8) offset += 4;
+      mat3[i] = storage[i + offset];
+    }
+    mat3[8] = 1;
+    return Matrix3.fromList(mat3);
+  }
+
+  Float64List toMatrix3RowFirst() {
+    print("Mat4: ");
+    print(this);
+
+    final mat3 = toMatrix3();
+    print("Mat3: ");
+    print(mat3);
+    Float64List r = Float64List(9);
+    for (int x = 0; x < 3; x++) {
+      for (int y = 0; y < 3; y++) {
+        r[3 * y + x] = mat3.storage[3 * x + y];
+      }
+    }
+    print("Mat3 RowFirst: ");
+    print(r);
+    return r;
   }
 }
