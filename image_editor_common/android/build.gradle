@@ -47,5 +47,4 @@ android {
 dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.3.7'
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
-    api "io.flutter:flutter_embedding_release:1.0.0-18b71d647a292a980abb405ac7d16fe1f0b20434"
 }
