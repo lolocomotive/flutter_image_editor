@@ -2,10 +2,19 @@ package com.fluttercandies.image_editor.util
 
 import android.graphics.Matrix
 import android.graphics.PorterDuff
-import io.flutter.plugin.common.MethodCall
 import com.fluttercandies.image_editor.core.BitmapWrapper
-import com.fluttercandies.image_editor.option.*
+import com.fluttercandies.image_editor.option.AddTextOpt
+import com.fluttercandies.image_editor.option.ClipOption
+import com.fluttercandies.image_editor.option.ColorOption
+import com.fluttercandies.image_editor.option.FlipOption
+import com.fluttercandies.image_editor.option.FormatOption
+import com.fluttercandies.image_editor.option.MixImageOpt
+import com.fluttercandies.image_editor.option.Option
+import com.fluttercandies.image_editor.option.RotateOption
+import com.fluttercandies.image_editor.option.ScaleOption
+import com.fluttercandies.image_editor.option.Text
 import com.fluttercandies.image_editor.option.draw.DrawOption
+import io.flutter.plugin.common.MethodCall
 
 object ConvertUtils {
     fun getFormatOption(call: MethodCall): FormatOption {
@@ -34,30 +43,37 @@ object ConvertUtils {
                     val flipOption = getFlipOption(valueMap)
                     list.add(flipOption)
                 }
+
                 "clip" -> {
                     val clipOption = getClipOption(valueMap)
                     list.add(clipOption)
                 }
+
                 "rotate" -> {
                     val rotateOption = getRotateOption(valueMap)
                     list.add(rotateOption)
                 }
+
                 "color" -> {
                     val colorOption: ColorOption = getColorOption(valueMap)
                     list.add(colorOption)
                 }
+
                 "scale" -> {
                     val scaleOption: ScaleOption = getScaleOption(valueMap) ?: continue@loop
                     list.add(scaleOption)
                 }
+
                 "add_text" -> {
                     val addTextOption: AddTextOpt = getTextOption(valueMap) ?: continue@loop
                     list.add(addTextOption)
                 }
+
                 "mix_image" -> {
                     val mixImageOpt = MixImageOpt(valueMap)
                     list.add(mixImageOpt)
                 }
+
                 "draw" -> {
                     val drawOption = DrawOption(valueMap)
                     list.add(drawOption)
@@ -88,20 +104,19 @@ object ConvertUtils {
         val mat = Matrix()
         val transform = v["transform"]!! as DoubleArray
         val transformFloat = FloatArray(transform.size)
-        for (i in transform.indices){
+        for (i in transform.indices) {
             transformFloat[i] = transform[i].toFloat()
         }
         mat.setValues(transformFloat)
         return Text(
             v["text"]!!.asValue(),
             mat,
-            v["size"] as Double,
-            v["r"]!!.asValue(),
-            v["g"]!!.asValue(),
-            v["b"]!!.asValue(),
-            v["a"]!!.asValue(),
-            v["fontName"]!!.asValue()
-        )
+            (v["size"] as Double).toFloat(),
+            v["fill"] as Int,
+            v["outline"] as Int,
+            v["fontName"]!!.asValue(),
+            (v["outlineWidth"] as Double).toFloat(),
+            )
     }
 
     private fun getScaleOption(optionMap: Any?): ScaleOption? {

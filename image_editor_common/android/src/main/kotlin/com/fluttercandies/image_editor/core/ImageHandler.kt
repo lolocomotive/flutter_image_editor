@@ -1,12 +1,28 @@
 package com.fluttercandies.image_editor.core
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import com.fluttercandies.image_editor.common.font.FontUtils
-import com.fluttercandies.image_editor.option.*
+import com.fluttercandies.image_editor.option.AddTextOpt
+import com.fluttercandies.image_editor.option.ClipOption
+import com.fluttercandies.image_editor.option.ColorOption
+import com.fluttercandies.image_editor.option.FlipOption
+import com.fluttercandies.image_editor.option.FormatOption
+import com.fluttercandies.image_editor.option.MixImageOpt
+import com.fluttercandies.image_editor.option.Option
+import com.fluttercandies.image_editor.option.RotateOption
+import com.fluttercandies.image_editor.option.ScaleOption
+import com.fluttercandies.image_editor.option.Text
 import com.fluttercandies.image_editor.option.draw.DrawOption
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
@@ -117,30 +133,40 @@ class ImageHandler(private var bitmap: Bitmap) {
     }
 
     private fun drawText(text: Text, canvas: Canvas) {
-        val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
-        textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
-        textPaint.textSize = text.fontSize.toFloat()
+        val fillPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+        val strokePaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+        fillPaint.color = text.fill
+        strokePaint.color = text.outline
+        fillPaint.textSize = text.fontSize
+        strokePaint.textSize = text.fontSize
         if (text.fontName.isNotEmpty()) {
             try {
                 val typefaceFromAsset = FontUtils.getFont(text.fontName)
-                textPaint.typeface = typefaceFromAsset
+                fillPaint.typeface = typefaceFromAsset
+                strokePaint.typeface = typefaceFromAsset
             } catch (_: Exception) {
             }
         }
-        textPaint.textAlign = Paint.Align.LEFT
+        fillPaint.textAlign = Paint.Align.LEFT
+        strokePaint.textAlign = Paint.Align.LEFT
+        strokePaint.style = Paint.Style.STROKE;
+        strokePaint.strokeWidth = text.outlineWidth;
 
         @Suppress("DEPRECATION") val previous = canvas.matrix
 
-        val staticLayout = getStaticLayout(text, textPaint, canvas.width)
+
+        val fillLayout = getStaticLayout(text, fillPaint, canvas.width)
+        val strokeLayout = getStaticLayout(text, strokePaint, canvas.width)
         val bounds = Rect()
         canvas.getClipBounds(bounds)
         val cHeight = bounds.height()
-        val y = cHeight / 2f - staticLayout.height / 2f
+        val y = cHeight / 2f - fillLayout.height / 2f
         val transform = Matrix(text.transform)
-
         transform.preTranslate(0f, y)
         canvas.setMatrix(transform)
-        staticLayout.draw(canvas)
+
+        strokeLayout.draw(canvas)
+        fillLayout.draw(canvas)
 
         canvas.setMatrix(previous)
     }

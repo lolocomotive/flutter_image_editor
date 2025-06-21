@@ -34,6 +34,8 @@ class EditorText {
     this.fontSize = 14,
     this.textColor = Colors.black,
     this.fontName = '',
+    this.outlineColor = Colors.transparent,
+    this.outlineWidth = 0,
   });
 
   /// The text.
@@ -51,16 +53,18 @@ class EditorText {
   /// The font name of text, if fontName is empty string, the text will use system font.
   String fontName;
 
+  Color outlineColor;
+  double outlineWidth;
+
   Map<String, Object> toJson() {
     return <String, Object>{
       'text': text,
       'fontName': fontName,
       'transform': transform.toMatrix3RowFirst(),
       'size': fontSize,
-      'r': textColor.red,
-      'g': textColor.green,
-      'b': textColor.blue,
-      'a': textColor.alpha,
+      'fill': textColor.toARGB32(),
+      'outline': outlineColor.toARGB32(),
+      'outlineWidth': outlineWidth
     };
   }
 }

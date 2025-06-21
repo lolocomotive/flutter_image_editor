@@ -13,10 +13,9 @@ class AddTextOpt : Option {
 data class Text(
     val text: String,
     val transform: Matrix,
-    val fontSize: Double,
-    val r: Int,
-    val g: Int,
-    val b: Int,
-    val a: Int,
-    val fontName: String
-)
+    val fontSize: Float,
+    val fill: Int,
+    val outline: Int,
+    val fontName: String,
+    val outlineWidth: Float,
+    )
