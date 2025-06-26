@@ -112,11 +112,11 @@ object ConvertUtils {
             v["text"]!!.asValue(),
             mat,
             (v["size"] as Double).toFloat(),
-            v["fill"] as Int,
-            v["outline"] as Int,
+            (v["fill"] as Long).toInt(),
+            (v["outline"] as Long).toInt(),
             v["fontName"]!!.asValue(),
             (v["outlineWidth"] as Double).toFloat(),
-            )
+        )
     }
 
     private fun getScaleOption(optionMap: Any?): ScaleOption? {

@@ -139,6 +139,9 @@ class ImageHandler(private var bitmap: Bitmap) {
         strokePaint.color = text.outline
         fillPaint.textSize = text.fontSize
         strokePaint.textSize = text.fontSize
+        strokePaint.strokeJoin = Paint.Join.ROUND
+        strokePaint.strokeCap = Paint.Cap.ROUND
+
         if (text.fontName.isNotEmpty()) {
             try {
                 val typefaceFromAsset = FontUtils.getFont(text.fontName)
