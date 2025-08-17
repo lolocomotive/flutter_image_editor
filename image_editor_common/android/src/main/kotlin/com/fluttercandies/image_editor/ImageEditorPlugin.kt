@@ -78,7 +78,9 @@ class ImageEditorPlugin : FlutterPlugin, MethodCallHandler {
                     }
                     "registerFont" -> {
                         val fontPath = call.argument<String>("path")!!
-                        val name = FontUtils.registerFont(fontPath)
+                        val fontName = call.argument<String>("name")
+
+                        val name = FontUtils.registerFont(fontPath, fontName)
                         resultHandler.reply(name)
                     }
                     else -> {

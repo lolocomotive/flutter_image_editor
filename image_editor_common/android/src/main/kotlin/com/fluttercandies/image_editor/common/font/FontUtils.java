@@ -20,14 +20,17 @@ public class FontUtils {
     private static int fontIndex = -1;
     private static final Map<String, Typeface> map = new HashMap<>();
 
-    public static String registerFont(String path) throws IOException {
-        String fontName = null;
+    public static String registerFont(String path, String fontName) throws IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             TTFFile ttfFile = TTFFile.open(Files.newInputStream(Paths.get(path)));
-            fontName = ttfFile.getFullName();
+            if(fontName == null){
+                fontName = ttfFile.getFullName();
+            }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TTFFile ttfFile = TTFFile.open(new FileInputStream(path));
-            fontName = ttfFile.getFullName();
+            if(fontName == null){
+                fontName = ttfFile.getFullName();
+            }
         }
         if (fontName == null) {
             fontIndex++;

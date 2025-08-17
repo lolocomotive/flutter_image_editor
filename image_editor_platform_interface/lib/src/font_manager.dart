@@ -6,10 +6,10 @@ import 'channel.dart';
 class FontManager {
   const FontManager._();
 
-  static Future<String> registerFont(File file) async {
+  static Future<String> registerFont(File file, [String? fontName]) async {
     return await NativeChannel.channel.invokeMethod(
       'registerFont',
-      <String, Object?>{'path': file.absolute.path},
+      <String, Object?>{'path': file.absolute.path,'name': fontName},
     );
   }
 }
