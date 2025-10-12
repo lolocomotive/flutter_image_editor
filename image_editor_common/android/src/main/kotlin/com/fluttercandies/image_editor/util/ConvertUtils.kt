@@ -113,7 +113,10 @@ object ConvertUtils {
             mat,
             (v["size"] as Double).toFloat(),
             (v["fill"] as Long).toInt(),
-            (v["outline"] as Long).toInt(),
+            when (val outlineValue = v["outline"]) {
+                is Long -> outlineValue.toInt()
+                is Int -> outlineValue
+            },
             v["fontName"]!!.asValue(),
             (v["outlineWidth"] as Double).toFloat(),
         )
