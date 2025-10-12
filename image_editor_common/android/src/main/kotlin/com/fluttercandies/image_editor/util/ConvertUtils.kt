@@ -116,6 +116,7 @@ object ConvertUtils {
             when (val outlineValue = v["outline"]) {
                 is Long -> outlineValue.toInt()
                 is Int -> outlineValue
+                else -> 0
             },
             v["fontName"]!!.asValue(),
             (v["outlineWidth"] as Double).toFloat(),
