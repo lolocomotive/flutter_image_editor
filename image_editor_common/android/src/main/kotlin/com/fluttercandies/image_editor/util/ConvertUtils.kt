@@ -120,6 +120,11 @@ object ConvertUtils {
             },
             v["fontName"]!!.asValue(),
             (v["outlineWidth"] as Double).toFloat(),
+            when (val backgroundValue = v["background"]) {
+                is Long -> backgroundValue.toInt()
+                is Int -> backgroundValue
+                else -> 0
+            },
         )
     }
 

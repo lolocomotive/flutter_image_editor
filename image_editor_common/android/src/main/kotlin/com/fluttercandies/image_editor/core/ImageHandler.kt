@@ -3,6 +3,7 @@ package com.fluttercandies.image_editor.core
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
@@ -167,6 +168,21 @@ class ImageHandler(private var bitmap: Bitmap) {
         val transform = Matrix(text.transform)
         transform.preTranslate(0f, y)
         canvas.setMatrix(transform)
+
+        if (Color.alpha(text.background) != 0) {
+            var maxWidth = 0f
+            for (i in 0 until fillLayout.lineCount) {
+                maxWidth = maxOf(maxWidth, fillLayout.getLineWidth(i))
+            }
+            val padding = text.fontSize * 0.25f
+            val left = (fillLayout.width - maxWidth) / 2f - padding
+            val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+            backgroundPaint.color = text.background
+            canvas.drawRoundRect(
+                left, -padding, left + maxWidth + 2 * padding, fillLayout.height + padding,
+                padding, padding, backgroundPaint
+            )
+        }
 
         strokeLayout.draw(canvas)
         fillLayout.draw(canvas)

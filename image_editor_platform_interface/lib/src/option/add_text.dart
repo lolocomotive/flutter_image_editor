@@ -36,6 +36,7 @@ class EditorText {
     this.fontName = '',
     this.outlineColor = Colors.transparent,
     this.outlineWidth = 0,
+    this.background = Colors.transparent,
   });
 
   /// The text.
@@ -56,6 +57,9 @@ class EditorText {
   Color outlineColor;
   double outlineWidth;
 
+  /// Color of the rounded rectangle drawn behind the text. Transparent for none.
+  Color background;
+
   Map<String, Object> toJson() {
     return <String, Object>{
       'text': text,
@@ -64,7 +68,8 @@ class EditorText {
       'size': fontSize,
       'fill': textColor.toARGB32(),
       'outline': outlineColor.toARGB32(),
-      'outlineWidth': outlineWidth
+      'outlineWidth': outlineWidth,
+      'background': background.toARGB32(),
     };
   }
 }

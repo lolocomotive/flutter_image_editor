@@ -18,4 +18,5 @@ data class Text(
     val outline: Int,
     val fontName: String,
     val outlineWidth: Float,
+    val background: Int,
     )
